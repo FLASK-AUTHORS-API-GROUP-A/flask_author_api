@@ -15,6 +15,7 @@ class Author(db.Model):
       updated_at = db.Column(db.DateTime, onupdate = datetime.now())
 
       def __init__(self, author_id, first_name, last_name, contact, email, password , image, bio, created_at, updated_at):
+        super('Author', self).__init__()
         self.author_id = author_id
         self.first_name = first_name
         self.last_name = last_name
@@ -25,3 +26,6 @@ class Author(db.Model):
         self.bio = bio
         self.created_at = created_at
         self.updated_at = updated_at
+
+      def __repr__(self) -> str:
+        return f'{self.first_name} {self.last_name}'

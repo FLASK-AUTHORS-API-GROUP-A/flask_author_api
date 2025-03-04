@@ -1,5 +1,5 @@
 from flask import Flask 
-from app.extensions import db,migrate
+from app.extensions import db,migrate ,jwt
 
 #Application Factory Function
 def create_app():
@@ -9,6 +9,7 @@ def create_app():
 
     db.init_app(app)
     migrate.init_app(app,db)
+    jwt.init_app(app)
     
 
     #Registering models
@@ -21,7 +22,7 @@ def create_app():
     #index route
     @app.route('/')
     def home():
-      return "Hello."
+      return "Hello. This is OUR Flask Author API"
     
 
     return app

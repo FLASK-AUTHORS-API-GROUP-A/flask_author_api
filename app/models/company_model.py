@@ -10,10 +10,13 @@ class Company(db.Model):
         description = db.Column(db.String(100), nullable = False)
         email =  db.Column(db.String(30), nullable = False, unique = True)
         contact = db.Column(db.String(10), nullable = False, unique = True)
+        author_id = db.Column(db.Integer, db.ForeignKey('authors.id'))
+        author = db.relationship('Author', backref = 'companies')
         created_at = db.Column(db.DateTime, default = datetime.now())
         updated_at = db.Column(db.DateTime, onupdate = datetime.now())
 
         def __init__(self , company_id, name, origin, description , email, contact, created_at, updated_at ):
+         super('Company',self).__init__()
          self.company_id = company_id
          self.name = name
          self.origin = origin
@@ -22,4 +25,7 @@ class Company(db.Model):
          self.contact = contact
          self.created_at = created_at
          self.updated_at = updated_at
+
+        def __repr__(self) -> str:
+           return f'{self.name} {self.description}'
          

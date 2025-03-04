@@ -10,18 +10,23 @@ class Book(db.Model):
      __tablename__ = "books"
      book_id = db.Column(db.Integer, primary_key=True, nullable = False)
      title = db.Column(db.String(30), nullable = False)
-     price = db.Column(db.String(20), nullable = False)
+     price = db.Column(db.Integer, nullable = False)
      description= db.Column(db.String(250), nullable = False)
-     isbn = db.Column(db.Integer, nullable = False, unique = True)
+     isbn = db.Column(db.String(30), nullable = False, unique = True)
      image = db.Column(db.String(255), nullable = True)
      no_of_pages = db.Column(db.String(5), nullable = False)
      price_unit= db.Column(db.String(20), nullable = False)
-     publication_date = db.Column(db.String(35), nullable = False)
+     author_id = db.Column(db.Integer, db.ForeignKey('authors.id'))
+     company_id = db.Column(db.Integer, db.ForeignKey('companies.id'))
+     author = db.relationship('Author', backref = 'books')
+     company = db.relationship('Company', backref = 'books')
+     publication_date = db.Column(db.Date, nullable = False)
      format= db.Column(db.String(50), nullable = False)
      genre= db.Column(db.String(50), nullable = False)
      language= db.Column(db.String(50), nullable = False)
 
      def __init__(self, book_id,title,price,description,isbn,image,no_of_pages,price_unit,publication_date,format, genre, language):
+       super('Book', self).__init__()
        self.book_id = book_id
        self.title = title
        self.price = price
@@ -34,6 +39,10 @@ class Book(db.Model):
        self.format= format
        self.genre= genre
        self.language= language
+
+     def __repr__(self) -> str:
+         return f'{self.title} {self.description}'
+         
 
 
        #ISBN = INTERNATIONAL STANDARD BOOK NUMBER
