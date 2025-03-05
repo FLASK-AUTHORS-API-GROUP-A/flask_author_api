@@ -5,7 +5,7 @@ from app.models.author_model import Author
 from app.extensions import db,bcrypt
 
 #auth blueprint
-auth = Blueprint("auth", __name__, url_prefix='api/v1/auth')
+auth = Blueprint("auth", __name__, url_prefix='/api/v1/auth')
 
 #user registration
 
