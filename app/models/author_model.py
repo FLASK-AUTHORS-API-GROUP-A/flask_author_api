@@ -10,11 +10,12 @@ class Author(db.Model):
       email = db.Column(db.String(30) , nullable = False, unique = True)
       password = db.Column(db.String(8), nullable = False)
       image = db.Column(db.String(255) , nullable = True)
-      bio = db.Column(db.String(200), nullable = False)
+      biography = db.Column(db.String(200), nullable = False)
+      author_type = db.Column(db.String(20), default= "author")
       created_at = db.Column(db.DateTime, default = datetime.now())
       updated_at = db.Column(db.DateTime, onupdate = datetime.now())
 
-      def __init__(self, author_id, first_name, last_name, contact, email, password , image, bio, created_at, updated_at):
+      def __init__(self, author_id, first_name, last_name, contact, email, password , image, biography, author_type):
         super('Author', self).__init__()
         self.author_id = author_id
         self.first_name = first_name
@@ -23,9 +24,8 @@ class Author(db.Model):
         self.email = email
         self.password = password
         self.image = image
-        self.bio = bio
-        self.created_at = created_at
-        self.updated_at = updated_at
+        self.biography = biography
+        self.author_type = author_type
 
-      def __repr__(self) -> str:
+      def get_full_name(self):
         return f'{self.first_name} {self.last_name}'

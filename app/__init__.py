@@ -1,5 +1,6 @@
 from flask import Flask 
 from app.extensions import db,migrate ,jwt
+from app.controllers.auth.auth_controller import auth
 
 #Application Factory Function
 def create_app():
@@ -17,12 +18,15 @@ def create_app():
     from app.models.book_model import Book
     from app.models.company_model import Company
 
+    #registering blue prints
+    app.register_blueprint(auth)
+
  
 
     #index route
     @app.route('/')
     def home():
-      return "Hello. This is OUR Flask Author API"
+      return "This is our Flask Author API"
     
 
     return app
