@@ -4,7 +4,7 @@ from datetime import datetime
 class Company(db.Model):
        # __bind_key__ = "companies_db" tells SQLAlchemy that this is a diff database from the authors db my default db literally.
         __tablename__ = "companies"
-        company_id = db.Column(db.Integer, primary_key=True)
+        id = db.Column(db.Integer, primary_key=True)
         name = db.Column(db.String(100), nullable = False)
         origin = db.Column(db.String(100), nullable = False)
         description = db.Column(db.String(100), nullable = False)
@@ -15,9 +15,9 @@ class Company(db.Model):
         created_at = db.Column(db.DateTime, default = datetime.now())
         updated_at = db.Column(db.DateTime, onupdate = datetime.now())
 
-        def __init__(self , company_id, name, origin, description , email, contact, created_at, updated_at ):
+        def __init__(self , id, name, origin, description , email, contact, created_at, updated_at ):
          super('Company',self).__init__()
-         self.company_id = company_id
+         self.id = id
          self.name = name
          self.origin = origin
          self.description = description
@@ -28,4 +28,4 @@ class Company(db.Model):
 
         def __repr__(self) -> str:
            return f'{self.name} {self.description}'
-         
+                    

@@ -1,3 +1,4 @@
+
 from app.extensions import db
 from datetime import datetime
 
@@ -25,9 +26,9 @@ class Book(db.Model):
      genre= db.Column(db.String(50), nullable = False)
      language= db.Column(db.String(50), nullable = False)
 
-     def __init__(self, book_id,title,price,description,isbn,image,no_of_pages,price_unit,publication_date,format, genre, language):
+     def __init__(self, id,title,price,description,isbn,image,no_of_pages,price_unit,publication_date,format, genre, language):
        super('Book', self).__init__()
-       self.book_id = book_id
+       self.id = id
        self.title = title
        self.price = price
        self.description= description
@@ -41,8 +42,6 @@ class Book(db.Model):
        self.language= language
 
      def __repr__(self) -> str:
-         return f'{self.title} {self.description}'
-         
+         return f'{self.title} {self.description}'    
 
-
-       #ISBN = INTERNATIONAL STANDARD BOOK NUMBER
+            
