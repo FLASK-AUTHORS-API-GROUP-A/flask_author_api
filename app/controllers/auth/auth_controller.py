@@ -9,27 +9,24 @@ auth = Blueprint("auth", __name__, url_prefix='/api/v1/auth')
 
 #user registration
 
-@auth.route('/register',methods = ['POST'])
+@auth.route('/create',methods = ['POST'])
 def register_user(): 
 
     #storing request values
     data = request.json
-    author_id = data.get('author_id')
     first_name = data.get('first_name')
     last_name = data.get('last_name')
     contact = data.get('contact')
     email = data.get('email')
     password = data.get('password')
-    type = data.get('type') if "author_type" in data else "author"
     image = data.get('image')
-    biography = data.get('biography','')if type == "author" else ''
+    biography = data.get('biography')
 
      #validation of data
     if not first_name or not last_name or not contact or not password or not email:
         return jsonify({"Error":"All fields are required"}), HTTP_400_BAD_REQUEST
     
-    if type == "author" and not biography:
-        return jsonify({"Error":"Enter your author biography"}), HTTP_400_BAD_REQUEST
+
     
     if len(password) < 8:
         return jsonify({"Error":"Password is invalid"}), HTTP_400_BAD_REQUEST
@@ -64,7 +61,7 @@ def register_user():
         authorname = new_author.get_full_name()
 
         return jsonify({
-            "message": authorname + " has been successfully created as an" + new_author.author_type,
+            "message": authorname + " has been successfully created as an" ,
             "user": {
                 "author_id":new_author.author_id,
                 "first_name":new_author.first_name,
@@ -72,7 +69,6 @@ def register_user():
                 "email":new_author.email,
                 "contact":new_author.contact,
                 "biography":new_author.biography,
-                "author_type":new_author.author_type,
                 "image":new_author.image
             }
         }),HTTP_201_CREATED

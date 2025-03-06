@@ -15,9 +15,9 @@ def create_app():
 
     #Registering models
     from app.models.author_model import Author
-    from app.models.book_model import Book
     from app.models.company_model import Company
-
+    from app.models.book_model import Book
+ 
     #registering blue prints
     app.register_blueprint(auth)
 
