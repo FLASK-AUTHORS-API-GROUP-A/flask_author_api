@@ -1,8 +1,9 @@
 from flask import Blueprint, request, jsonify
-from app.status_code import HTTP_400_BAD_REQUEST, HTTP_409_CONFLICT,HTTP_500_INTERNAL_SERVER_ERROR,HTTP_201_CREATED
+from app.status_code import HTTP_400_BAD_REQUEST, HTTP_409_CONFLICT,HTTP_500_INTERNAL_SERVER_ERROR,HTTP_201_CREATED,HTTP_401_UNAUTHORIZED,HTTP_200_OK
 import validators
 from app.models.author_model import Author
 from app.extensions import db,bcrypt
+from flask_jwt_extended import create_access_token
 
 #auth blueprint
 auth = Blueprint("auth", __name__, url_prefix='/api/v1/auth')
@@ -25,8 +26,6 @@ def register_user():
      #validation of data
     if not first_name or not last_name or not contact or not password or not email:
         return jsonify({"Error":"All fields are required"}), HTTP_400_BAD_REQUEST
-    
-
     
     if len(password) < 8:
         return jsonify({"Error":"Password is invalid"}), HTTP_400_BAD_REQUEST
@@ -67,6 +66,7 @@ def register_user():
                 "first_name":new_author.first_name,
                 "last_name":new_author.last_name,
                 "email":new_author.email,
+                "password":new_author.password,
                 "contact":new_author.contact,
                 "biography":new_author.biography,
                 "image":new_author.image
@@ -77,17 +77,41 @@ def register_user():
         db.session.rollback()
         return jsonify({"Error":str(e)}),HTTP_500_INTERNAL_SERVER_ERROR
     
+
+#author login
+@auth.route("/login", methods=['POST'])
+def login():
     
+    email = request.json.get('email')
+    password = request.json.get('password')
+
+    try:
+        if not email or not password:
+            return jsonify({"Error":"Email and password are required"}), HTTP_400_BAD_REQUEST 
+        
+        author = Author.query.filter_by(email=email).first()
+
+        if author:
+            correct_password = bcrypt.check_password_hash(Author.password,password)
+
+            if correct_password:
+                access_token = create_access_token(identity=str(author.author_id))
 
 
+                return jsonify({
+                    "author":{'author':author.author_id,
+                              'authorname' : author. get_full_name(),
+                              'email': author.email,
+                              'access_token' : access_token
+                              }
+                             }),HTTP_200_OK
+            else:
+                return jsonify({"Error":"Invalid password"}),HTTP_401_UNAUTHORIZED
+
+        else:
+            return jsonify({"Error":"Invalid email"}),HTTP_401_UNAUTHORIZED
+        
+
+    except Exception as e:
+        return jsonify({"Error":str(e)})
     
-
-
-    
-
-
-
-
-
-
-

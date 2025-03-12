@@ -4,7 +4,7 @@ from datetime import datetime
 class Company(db.Model):
        # __bind_key__ = "companies_db" tells SQLAlchemy that this is a diff database from the authors db my default db literally.
         __tablename__ = "companies"
-        company_id = db.Column(db.Integer, primary_key=True)
+        company_id = db.Column(db.Integer, primary_key=True, nullable = False)
         name = db.Column(db.String(100), nullable = False)
         origin = db.Column(db.String(100), nullable = False)
         description = db.Column(db.String(100), nullable = False)
