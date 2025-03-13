@@ -4,6 +4,9 @@ import validators
 from app.models.author_model import Author
 from app.extensions import db,bcrypt
 from flask_jwt_extended import create_access_token
+from flask_jwt_extended import create_refresh_token
+from flask_jwt_extended import get_jwt_identity
+from flask_jwt_extended import jwt_required
 
 #auth blueprint
 auth = Blueprint("auth", __name__, url_prefix='/api/v1/auth')
@@ -96,13 +99,15 @@ def login():
 
             if correct_password:
                 access_token = create_access_token(identity=str(author.author_id))
+                refresh_token = create_refresh_token(identity=author.author_id)
 
 
                 return jsonify({
                     "author":{'author':author.author_id,
                               'authorname' : author. get_full_name(),
                               'email': author.email,
-                              'access_token' : access_token
+                              'access_token' : access_token,
+                              'refresh_token' : refresh_token
                               }
                              }),HTTP_200_OK
             else:
@@ -114,4 +119,15 @@ def login():
 
     except Exception as e:
         return jsonify({"Error":str(e)})
+    
+
+    #refresh tokens
+    # We are using the `refresh=True` options in jwt_required to only allow
+    # refresh tokens to access this route.
+@auth.route("token/refresh", methods=["POST"])
+@jwt_required(refresh=True)
+def refresh():
+    identity = get_jwt_identity()
+    access_token = create_access_token(identity=identity)
+    return jsonify({"access_token" : access_token})
     
