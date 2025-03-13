@@ -3,7 +3,7 @@ from datetime import datetime
 
 class Author(db.Model):
       __tablename__ = "authors" 
-      id = db.Column(db.Integer, primary_key=True , nullable = False)
+      id = db.Column(db.Integer, primary_key=True , nullable = False)# Primary keys are always auto incremented
       first_name = db.Column(db.String(100) , nullable = False)
       last_name = db.Column(db.String(100) , nullable = False)
       contact = db.Column(db.String(10), nullable = False, unique = True)
@@ -11,7 +11,6 @@ class Author(db.Model):
       password = db.Column(db.String(8), nullable = False)
       image = db.Column(db.String(255) , nullable = True)
       biography = db.Column(db.String(200), nullable = False)
-      author_type = db.Column(db.String(20), default= "author")
       created_at = db.Column(db.DateTime, default = datetime.now())
       updated_at = db.Column(db.DateTime, onupdate = datetime.now())
 
@@ -25,7 +24,6 @@ class Author(db.Model):
         self.password = password
         self.image = image
         self.biography = biography
-        self.author_type = author_type
 
       def get_full_name(self):
         return f'{self.first_name} {self.last_name}'

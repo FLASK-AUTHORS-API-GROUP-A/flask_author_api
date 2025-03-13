@@ -5,7 +5,7 @@ from app.extensions import db
 from flask_jwt_extended import jwt_required,get_jwt_identity
 
 #company blueprint
-companies = Blueprint('companies',__name__,url_prefix='/api/v1/')
+companies = Blueprint('companies',__name__,url_prefix='/api/v1/company')
 
 #Creating companies
 @companies.route('/create',methods=['POST'])
@@ -17,20 +17,28 @@ def createCompany():
     id = get_jwt_identity()
     name = data.get('name')
     origin = data.get('origin')
-    description =data.get('description') 
+    description =data.get('description')
+    contact = data.get('contact')
+    email = data.get('email') 
     created_at = data.get('created_at')
     updated_at = data.get('updated_at')
 
   #validations of the incoming request
-    if not name or not origin or not description :
+    if not name or not origin or not description or not email or not contact:
         return jsonify({"error":"All fields are required"}), HTTP_400_BAD_REQUEST
 
     if Company.query.filter_by(name=name).first() is not None:
         return jsonify({"error":"Company name already exists"}),HTTP_409_CONFLICT
+    
+    if Company.query.filter_by(email=email).first() is not None:
+        return jsonify({"error":"Email is already in use"}),HTTP_409_CONFLICT
+    
+    if Company.query.filter_by(contact-contact).first() is not None:
+        return jsonify({"error":"Contact already in use"}),HTTP_409_CONFLICT
 
     try:
         #creating a new company
-        new_company = Company(id=id,name=name,origin=origin,description=description,created_at=created_at,updated_at=updated_at) 
+        new_company = Company(id=id,name=name,origin=origin,description=description,contact=contact,email=email,created_at=created_at,updated_at=updated_at) 
         db.session.add(new_company)
         db.session.commit()
 
@@ -41,6 +49,8 @@ def createCompany():
                 'name':new_company.name,
                 'origin':new_company.origin,
                 'description':new_company.description,
+                'email':new_company.email,
+                'contact':new_company.contact,
                 'created_at':new_company.created_at,
                 'updated_at':new_company.updated_at,
 

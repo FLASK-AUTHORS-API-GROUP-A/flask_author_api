@@ -13,30 +13,28 @@ auth = Blueprint("auth", __name__, url_prefix='api/v1/auth')
 def register_user(): 
 
     #storing request values
-    data = request.json
-    author_id = data.get('author_id')
+    data = request.json   #JSON is javascript 
+    # network calls we work with json
     first_name = data.get('first_name')
     last_name = data.get('last_name')
     contact = data.get('contact')
     email = data.get('email')
     password = data.get('password')
-    type = data.get('type') if "author_type" in data else "author"
     image = data.get('image')
-    biography = data.get('biography','')if type == "author" else ''
+    biography = data.get('biography')
 
      #validation of data
     if not first_name or not last_name or not contact or not password or not email:
         return jsonify({"Error":"All fields are required"}), HTTP_400_BAD_REQUEST
     
-    if type == "author" and not biography:
-        return jsonify({"Error":"Enter your author biography"}), HTTP_400_BAD_REQUEST
-    
+     #Ensuring password is less than 8
     if len(password) < 8:
         return jsonify({"Error":"Password is invalid"}), HTTP_400_BAD_REQUEST
     
     if not validators.email(email):
         return jsonify({"Error":"Email is not valid"}), HTTP_400_BAD_REQUEST
     
+    #
     if Author.query.filter_by(email=email).first() is not None:
         return jsonify({"Error":"Email is already in use."}),HTTP_409_CONFLICT
     
@@ -44,7 +42,7 @@ def register_user():
         return jsonify({"Error":"Contact is already in use."}),HTTP_409_CONFLICT
     
     try:
-        #hashing the password
+        #hashing the password to ensure that data is not stolen(security meaasures)
         hashed_password =  bcrypt.generate_password_hash(password)
 
         #creating a new author
@@ -64,15 +62,14 @@ def register_user():
         authorname = new_author.get_full_name()
 
         return jsonify({
-            "message": authorname + " has been successfully created as an" + new_author.author_type,
+            "message": authorname + " has been successfully created as an",
             "user": {
-                "author_id":new_author.author_id,
+                "author_id":new_author.id,
                 "first_name":new_author.first_name,
                 "last_name":new_author.last_name,
                 "email":new_author.email,
                 "contact":new_author.contact,
                 "biography":new_author.biography,
-                "author_type":new_author.author_type,
                 "image":new_author.image
             }
         }),HTTP_201_CREATED
