@@ -16,7 +16,7 @@ class Company(db.Model):
         updated_at = db.Column(db.DateTime, onupdate = datetime.now())
 
         def __init__(self , company_id, name, origin, description , email, contact, created_at, updated_at ):
-         super('Company',self).__init__()
+         super(Company,self).__init__()
          self.company_id = company_id
          self.name = name
          self.origin = origin

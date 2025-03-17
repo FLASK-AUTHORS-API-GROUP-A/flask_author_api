@@ -26,7 +26,7 @@ class Book(db.Model):
      language= db.Column(db.String(50), nullable = False)
 
      def __init__(self, book_id,title,price,description,isbn,image,no_of_pages,price_unit,publication_date,format, genre, language):
-       super('Book', self).__init__()
+       super(Book, self).__init__()
        self.book_id = book_id
        self.title = title
        self.price = price

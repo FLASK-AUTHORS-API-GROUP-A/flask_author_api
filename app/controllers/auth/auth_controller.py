@@ -44,7 +44,7 @@ def register_user():
     
     try:
         #hashing the password
-        hashed_password =  bcrypt.generate_password_hash(password)
+        hashed_password =  bcrypt.generate_password_hash(password).decode('utf-8')
 
         #creating a new author
         new_author = Author(
@@ -98,7 +98,7 @@ def login():
             correct_password = bcrypt.check_password_hash(Author.password,password)
 
             if correct_password:
-                access_token = create_access_token(identity=str(author.author_id))
+                access_token = create_access_token(identity=str(author.author_id)) #uniquely identify a user
                 refresh_token = create_refresh_token(identity=author.author_id)
 
 
