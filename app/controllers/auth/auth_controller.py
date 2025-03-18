@@ -95,20 +95,22 @@ def login():
         author = Author.query.filter_by(email=email).first()
 
         if author:
-            correct_password = bcrypt.check_password_hash(Author.password,password)
+            correct_password = bcrypt.check_password_hash(author.password,password)
 
             if correct_password:
                 access_token = create_access_token(identity=str(author.author_id)) #uniquely identify a user
-                refresh_token = create_refresh_token(identity=author.author_id)
+                refresh_token = create_refresh_token(identity=str(author.author_id))
 
 
                 return jsonify({
-                    "author":{'author':author.author_id,
+                    "author":{
+                              'author':author.author_id,
                               'authorname' : author. get_full_name(),
                               'email': author.email,
                               'access_token' : access_token,
                               'refresh_token' : refresh_token
-                              }
+                              },
+                              'message' : 'You have successfully logged into your account.'
                              }),HTTP_200_OK
             else:
                 return jsonify({"Error":"Invalid password"}),HTTP_401_UNAUTHORIZED

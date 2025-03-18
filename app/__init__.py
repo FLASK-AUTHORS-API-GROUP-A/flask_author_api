@@ -1,5 +1,5 @@
 from flask import Flask 
-from app.extensions import db,migrate ,jwt
+from app.extensions import db,migrate ,jwt , bcrypt
 from app.controllers.auth.auth_controller import auth
 from app.controllers.author.author_controller import author
 
@@ -12,6 +12,7 @@ def create_app():
     db.init_app(app)
     migrate.init_app(app,db)
     jwt.init_app(app)
+    bcrypt.init_app(app)
     
 
     #Registering models

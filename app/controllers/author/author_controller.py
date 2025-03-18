@@ -127,14 +127,14 @@ def get_author(author_id):
         
         
     
-@author.route('/edit/<int:id>', methods=['PUT', 'PATCH']) # Defining a route for editing an author  
+@author.route('/edit/<int:author_id>', methods=['PUT', 'PATCH']) # Defining a route for editing an author  
 @jwt_required()
-def update_author_details(id):
+def update_author_details(author_id):
     
     try:
         
-        current_author = get_jwt_identity() # Getting the current author's id from the access token
-        logged_in_author = Author.query.filter_by(id=current_author).first() # Querying the database for the author with the specified id
+        current_author = get_jwt_identity() # returns the current author's id
+        logged_in_author = Author.query.filter_by(author_id=current_author).first() # Querying the database for the author with the specified id
         
         
         author = Author.query.get(id) # Querying the database for the author with the specified id
