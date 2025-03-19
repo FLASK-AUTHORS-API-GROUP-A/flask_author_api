@@ -8,11 +8,13 @@ class Author(db.Model):
       last_name = db.Column(db.String(100) , nullable = False)
       contact = db.Column(db.String(10), nullable = False, unique = True)
       email = db.Column(db.String(30) , nullable = False, unique = True)
-      password = db.Column(db.String(200), nullable = False)
+      password = db.Column(db.String(255), nullable = False)
       image = db.Column(db.String(255) , nullable = True)
       biography = db.Column(db.String(200), nullable = False)
       created_at = db.Column(db.DateTime, default = datetime.now())
       updated_at = db.Column(db.DateTime, onupdate = datetime.now())
+      #books = db.relationship('Book', backref='author', lazy=True)
+      #companies = db.relationship('Company', backref='author', lazy=True)
 
       def __init__(self, first_name, last_name, contact, email, password , image, biography):
         super(Author, self).__init__()

@@ -7,7 +7,9 @@ from app.controllers.author.author_controller import author
 def create_app():
     
     app = Flask(__name__)
+    app.config['DEBUG'] = True
     app.config.from_object('config.Config')# we are registering our class Config in our AFF
+
 
     db.init_app(app)
     migrate.init_app(app,db)

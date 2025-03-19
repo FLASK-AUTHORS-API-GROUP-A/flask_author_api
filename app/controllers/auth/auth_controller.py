@@ -30,6 +30,9 @@ def register_user():
     if not first_name or not last_name or not contact or not password or not email:
         return jsonify({"Error":"All fields are required"}), HTTP_400_BAD_REQUEST
     
+    if not biography:
+        return jsonify({"Error":"Biography is required"}), HTTP_400_BAD_REQUEST
+    
     if len(password) < 8:
         return jsonify({"Error":"Password is invalid"}), HTTP_400_BAD_REQUEST
     
@@ -75,7 +78,6 @@ def register_user():
                 "image":new_author.image
             }
         }),HTTP_201_CREATED
-
     except Exception as e:
         db.session.rollback()
         return jsonify({"Error":str(e)}),HTTP_500_INTERNAL_SERVER_ERROR
@@ -111,6 +113,7 @@ def login():
                               'refresh_token' : refresh_token
                               },
                               'message' : 'You have successfully logged into your account.'
+                              
                              }),HTTP_200_OK
             else:
                 return jsonify({"Error":"Invalid password"}),HTTP_401_UNAUTHORIZED
