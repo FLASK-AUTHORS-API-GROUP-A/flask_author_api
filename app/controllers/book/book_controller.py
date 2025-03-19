@@ -1,9 +1,9 @@
 from flask import Blueprint, request, jsonify
-from app.status_code import HTTP_400_BAD_REQUEST,HTTP_409_CONFLICT,HTTP_500_INTERNAL_SERVER_ERROR, HTTP_200_OK, HTTP_401_UNAUTHORIZED, HTTP_201_CREATED
+from app.status_code import HTTP_400_BAD_REQUEST,HTTP_409_CONFLICT,HTTP_500_INTERNAL_SERVER_ERROR, HTTP_201_CREATED
 import validators
 from app.models.book_model import Book
-from app.extensions import db, bcrypt
-from flask_jwt_extended import create_access_token, jwt_required,get_jwt_identity, create_refresh_token
+from app.extensions import db
+from flask_jwt_extended import jwt_required,get_jwt_identity
 
 
 
@@ -44,7 +44,7 @@ def createBook():
     try:
       
 
-       #creating a new company
+       #creating a new book
        new_book = Book(title=title,price=price, description=description, company_id=company_id)
        db.session.add(new_book)
        db.session.commit()
@@ -65,4 +65,4 @@ def createBook():
     except Exception as e:   
         db.session.rollback() 
         return jsonify({'error':str(e)}),HTTP_500_INTERNAL_SERVER_ERROR
-    book_controllers
+    

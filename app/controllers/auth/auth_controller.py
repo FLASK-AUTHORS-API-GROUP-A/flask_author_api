@@ -1,8 +1,12 @@
 from flask import Blueprint, request, jsonify
-from app.status_code import HTTP_400_BAD_REQUEST, HTTP_409_CONFLICT,HTTP_500_INTERNAL_SERVER_ERROR,HTTP_201_CREATED
+from app.status_code import HTTP_400_BAD_REQUEST, HTTP_409_CONFLICT,HTTP_500_INTERNAL_SERVER_ERROR,HTTP_201_CREATED,HTTP_401_UNAUTHORIZED,HTTP_200_OK
 import validators
 from app.models.author_model import Author
 from app.extensions import db,bcrypt
+from flask_jwt_extended import create_access_token
+from flask_jwt_extended import create_refresh_token
+from flask_jwt_extended import get_jwt_identity
+from flask_jwt_extended import jwt_required
 
 #auth blueprint
 auth = Blueprint("auth", __name__, url_prefix='api/v1/auth')
@@ -64,7 +68,7 @@ def register_user():
         return jsonify({
             "message": authorname + " has been successfully created as an",
             "user": {
-                "author_id":new_author.id,
+                "id":new_author.id,
                 "first_name":new_author.first_name,
                 "last_name":new_author.last_name,
                 "email":new_author.email,
@@ -77,7 +81,58 @@ def register_user():
     except Exception as e:
         db.session.rollback()
         return jsonify({"Error":str(e)}),HTTP_500_INTERNAL_SERVER_ERROR
+
+#author login
+@auth.route("/login", methods=['POST'])
+def login():
     
+    email = request.json.get('email')
+    password = request.json.get('password')
+
+    try:
+        if not email or not password:
+            return jsonify({"Error":"Email and password are required"}), HTTP_400_BAD_REQUEST 
+        
+        author = Author.query.filter_by(email=email).first()
+
+        if author:
+            correct_password = bcrypt.check_password_hash(author.password,password)
+
+            if correct_password:
+                access_token = create_access_token(identity=str(author.id)) #uniquely identify a user
+                refresh_token = create_refresh_token(identity=str(author.id))
+
+
+                return jsonify({
+                    "author":{
+                              'author':author.id,
+                              'authorname' : author. get_full_name(),
+                              'email': author.email,
+                              'access_token' : access_token,
+                              'refresh_token' : refresh_token
+                              },
+                              'message' : 'You have successfully logged into your account.'
+                             }),HTTP_200_OK
+            else:
+                return jsonify({"Error":"Invalid password"}),HTTP_401_UNAUTHORIZED
+
+        else:
+            return jsonify({"Error":"Invalid email"}),HTTP_401_UNAUTHORIZED
+        
+
+    except Exception as e:
+        return jsonify({"Error":str(e)})
+    
+
+    #refresh tokens
+    # We are using the `refresh=True` options in jwt_required to only allow
+    # refresh tokens to access this route.
+@auth.route("token/refresh", methods=["POST"])
+@jwt_required(refresh=True)
+def refresh():
+    identity = get_jwt_identity()
+    access_token = create_access_token(identity=identity)
+    return jsonify({"access_token" : access_token})
     
 
 

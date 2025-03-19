@@ -44,7 +44,7 @@ def register_user():
     
     try:
         #hashing the password
-        hashed_password =  bcrypt.generate_password_hash(password)
+        hashed_password =  bcrypt.generate_password_hash(password).decode('utf-8')
 
         #creating a new author
         new_author = Author(
@@ -63,7 +63,7 @@ def register_user():
         authorname = new_author.get_full_name()
 
         return jsonify({
-            "message": authorname + " has been successfully created as an" + new_author,
+            "message": authorname + " has been successfully created as an",
             "user": {
                 "author_id":new_author.author_id,
                 "first_name":new_author.first_name,
@@ -71,7 +71,6 @@ def register_user():
                 "email":new_author.email,
                 "contact":new_author.contact,
                 "biography":new_author.biography,
-                "author_type":new_author,
                 "image":new_author.image
             }
         }),HTTP_201_CREATED
@@ -97,7 +96,7 @@ def login():
             correct_password = bcrypt.check_password_hash(Author.password,password)
 
             if correct_password:
-                access_token = create_access_token(identity=str(author.author_id))
+                access_token = create_access_token(identity=str(author.author_id)) #access tokens uniquely identify a user
                 refresh_token = create_refresh_token(identity=author.author_id)
 
 
