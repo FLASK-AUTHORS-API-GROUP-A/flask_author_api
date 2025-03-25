@@ -2,6 +2,7 @@ from flask import Flask
 from app.extensions import db,migrate ,jwt , bcrypt
 from app.controllers.auth.auth_controller import auth
 from app.controllers.author.author_controller import author
+from app.controllers.company.company_controller import companies
 
 #Application Factory Function
 def create_app():
@@ -25,6 +26,7 @@ def create_app():
     #registering blue prints
     app.register_blueprint(auth)
     app.register_blueprint(author)
+    app.register_blueprint(companies)
 
  
 
