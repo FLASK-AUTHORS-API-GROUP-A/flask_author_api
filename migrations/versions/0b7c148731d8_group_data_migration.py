@@ -1,8 +1,8 @@
 """group data migration
 
-Revision ID: 04556f18e9ca
+Revision ID: 0b7c148731d8
 Revises: 
-Create Date: 2025-03-18 10:47:38.906297
+Create Date: 2025-04-02 22:41:32.044385
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = '04556f18e9ca'
+revision = '0b7c148731d8'
 down_revision = None
 branch_labels = None
 depends_on = None

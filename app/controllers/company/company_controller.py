@@ -4,6 +4,7 @@ from app.models.company_model import Company
 from app.models.author_model import Author
 from app.extensions import db
 from flask_jwt_extended import jwt_required,get_jwt_identity
+from datetime import datetime
 
 #company blueprint
 companies = Blueprint('companies',__name__,url_prefix='/api/v1/companies')
@@ -14,15 +15,12 @@ companies = Blueprint('companies',__name__,url_prefix='/api/v1/companies')
 def createCompany():
 
   #storing request values
-    request = request.json
-    company_id = get_jwt_identity()
-    name = request.get('name')
-    origin = request.get('origin')
-    description =request.get('description')
-    contact = request.get('contact')
-    email = request.get('email') 
-    created_at = request.get('created_at')
-    updated_at = request.get('updated_at')
+    data = request.json
+    name = data.get('name')
+    origin = data.get('origin')
+    description = data.get('description')
+    contact = data.get('contact')
+    email = data.get('email') 
 
   #validations of the incoming request to avoid request redandancy
     if not name or not origin or not description or not email or not contact:
@@ -34,18 +32,30 @@ def createCompany():
     if Company.query.filter_by(email=email).first() is not None:
         return jsonify({"error":"Email is already in use"}),HTTP_409_CONFLICT
     
-    if Company.query.filter_by(contact-contact).first() is not None:
+    if Company.query.filter_by(contact=contact).first() is not None:
         return jsonify({"error":"Contact already in use"}),HTTP_409_CONFLICT
+
+      # Using datetime for timestamps
+    created_at = datetime.now()
+    updated_at = datetime.now()
 
     try:
         #creating a new company
-        new_company = Company(company_id=company_id,name=name,origin=origin,description=description,contact=contact,email=email,created_at=created_at,updated_at=updated_at) 
+        new_company = Company(
+            name=name,
+            origin=origin,
+            description=description,
+            contact=contact,
+            email=email,
+            created_at=created_at,
+            updated_at=updated_at) 
+        
         db.session.add(new_company)
         db.session.commit()
 
         return jsonify({
              'message':name + "has been created successfully",
-             'user':{
+             'Company':{
                 'company_id':new_company.company_id,
                 'name':new_company.name,
                 'origin':new_company.origin,
@@ -85,9 +95,10 @@ def get_all_companies():
                 'contact':company.contact,
                 'created_at':company.created_at,
                 'updated_at':company.updated_at, 
-                'user':{
+                'author':{
                     'first_name' : company.first_name,
                     'last_name' : company.last_name,
+                    'author_id' : company.authhor_id,
                     'email' : company.email,
                     'contact' : company.contact,
                     'biography' : company.biography,
@@ -138,6 +149,7 @@ def get_company(id):
                     'user':{
                         'first_name' : company.first_name,
                         'last_name' : company.last_name,
+                        'author_id' : company.author_id,
                         'email' : company.email,
                         'contact' : company.contact,
                         'biography' : company.biography,
@@ -197,9 +209,10 @@ def update_company_details(id):
                     'contact':company.contact,
                     'created_at':company.created_at,
                     'updated_at':company.updated_at, 
-                    'user':{
+                    'author':{
                         'first_name' : company.first_name,
                         'last_name' : company.last_name,
+                        'author_id' : company.author_id,
                         'email' : company.email,
                         'contact' : company.contact,
                         'biography' : company.biography,

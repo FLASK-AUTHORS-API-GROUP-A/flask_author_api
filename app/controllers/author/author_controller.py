@@ -233,7 +233,7 @@ def delete_author(author_id):
         
 #search for an author
 @author.get('/search', endpoint='search_authors') 
-@jwt_required 
+@jwt_required()
 def search_authors():
      
      try:
@@ -245,7 +245,7 @@ def search_authors():
                                        (Author.last_name.ilike(f"%{search_query}%"))
                                        ).all()
           
-          if len(authors) == 0:
+          if not authors:
                return jsonify({
                 'message': 'No results found.'
                 }), HTTP_404_NOT_FOUND
@@ -288,7 +288,8 @@ def search_authors():
                     'email' : company.email,
                     'contact' : company.contact,
                 } for company in author.companies]
-              authors_data.append(author_info)
+                authors_data.append(author_info)
+            
               return jsonify({
                             'message': f'Author with name {search_query} retrieved successfully',
                             'search_results': authors_data
