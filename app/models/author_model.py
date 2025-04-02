@@ -8,7 +8,7 @@ class Author(db.Model):
       last_name = db.Column(db.String(100) , nullable = False)
       contact = db.Column(db.String(10), nullable = False, unique = True)
       email = db.Column(db.String(30) , nullable = False, unique = True)
-      password = db.Column(db.String(8), nullable = False)
+      password = db.Column(db.String(255), nullable = False)
       image = db.Column(db.String(255) , nullable = True)
       biography = db.Column(db.String(200), nullable = False)
       created_at = db.Column(db.DateTime, default = datetime.now())
