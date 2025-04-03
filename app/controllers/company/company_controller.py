@@ -4,7 +4,6 @@ from app.models.company_model import Company
 from app.models.author_model import Author
 from app.extensions import db
 from flask_jwt_extended import jwt_required,get_jwt_identity
-from datetime import datetime
 
 #company blueprint
 companies = Blueprint('companies',__name__,url_prefix='/api/v1/companies')
@@ -16,7 +15,6 @@ def createCompany():
 
   #storing request values
     data = request.json
-    company_id = get_jwt_identity()
     name = data.get('name')
     origin = data.get('origin')
     description = data.get('description')
@@ -36,21 +34,16 @@ def createCompany():
     if Company.query.filter_by(contact=contact).first() is not None:
         return jsonify({"error":"Contact already in use"}),HTTP_409_CONFLICT
 
-      # Using datetime for timestamps
-    created_at = datetime.now()
-    updated_at = datetime.now()
 
     try:
         #creating a new company
         new_company = Company(
-            company_id=company_id,
             name=name,
             origin=origin,
             description=description,
             contact=contact,
             email=email,
-            created_at=created_at,
-            updated_at=updated_at) 
+          ) 
         
         db.session.add(new_company)
         db.session.commit()
@@ -82,7 +75,6 @@ def createCompany():
 @jwt_required()
 def get_all_companies():
     try:
-
         all_companies = Company.query.all()
 
         companies_request = []
