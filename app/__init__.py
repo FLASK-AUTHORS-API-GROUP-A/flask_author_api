@@ -3,6 +3,7 @@ from app.extensions import db,migrate ,jwt , bcrypt
 from app.controllers.auth.auth_controller import auth
 from app.controllers.author.author_controller import author
 from app.controllers.company.company_controller import companies
+from app.controllers.book.book_controller import book
 
 #Application Factory Function
 def create_app():
@@ -27,6 +28,7 @@ def create_app():
     app.register_blueprint(auth)
     app.register_blueprint(author)
     app.register_blueprint(companies)
+    app.register_blueprint(book)
 
  
 

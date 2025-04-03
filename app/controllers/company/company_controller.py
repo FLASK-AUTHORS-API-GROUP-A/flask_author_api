@@ -16,6 +16,7 @@ def createCompany():
 
   #storing request values
     data = request.json
+    company_id = get_jwt_identity()
     name = data.get('name')
     origin = data.get('origin')
     description = data.get('description')
@@ -42,6 +43,7 @@ def createCompany():
     try:
         #creating a new company
         new_company = Company(
+            company_id=company_id,
             name=name,
             origin=origin,
             description=description,
