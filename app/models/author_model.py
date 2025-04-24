@@ -13,8 +13,8 @@ class Author(db.Model):
       biography = db.Column(db.String(200), nullable = False)
       created_at = db.Column(db.DateTime, default = datetime.now())
       updated_at = db.Column(db.DateTime, onupdate = datetime.now())
-      #books = db.relationship('Book', backref='author', lazy=True)
-      #companies = db.relationship('Company', backref='author', lazy=True)
+      books = db.relationship('Book', backref='author', lazy=True)
+      companies = db.relationship('Company', backref='author', lazy=True)
 
       def __init__(self, first_name, last_name, contact, email, password , image, biography):
         super(Author, self).__init__()
