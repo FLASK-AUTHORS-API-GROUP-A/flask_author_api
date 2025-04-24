@@ -1,8 +1,9 @@
 HTTP_200_OK = 200 #data has been returned successfully
-HTTP_201_CREATED = 201
-HTTP_204_NO_CONTENT = 204
-HTTP_400_BAD_REQUEST = 400
-HTTP_401_UNAUTHORIZED = 401
-HTTP_404_NOT_FOUND = 404
-HTTP_409_CONFLICT = 409
-HTTP_500_INTERNAL_SERVER_ERROR = 500
+HTTP_201_CREATED = 201 #successful creation
+HTTP_204_NO_CONTENT = 204#Successful response but no content to return
+HTTP_400_BAD_REQUEST = 400# Bad request due to invalid syntax parameters.
+HTTP_401_UNAUTHORIZED = 401# Authentication is required and has failed or not been provided.
+HTTP_404_NOT_FOUND = 404 # The server understood the request but refuses to authorize it.
+HTTP_409_CONFLICT = 409# The requested resource could not be processed because of a conflict.
+HTTP_500_INTERNAL_SERVER_ERROR = 500 #Error message for server failure.
+HTTP_403_FORBIDDEN= 403

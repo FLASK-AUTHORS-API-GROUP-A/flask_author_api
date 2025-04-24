@@ -14,8 +14,8 @@ class Company(db.Model):
         author = db.relationship('Author', backref = 'companies')
         created_at = db.Column(db.DateTime, default = datetime.now())
         updated_at = db.Column(db.DateTime, onupdate = datetime.now())
-
-        def __init__(self , company_id, name, origin, description , email, contact, created_at, updated_at ):
+ 
+        def __init__(self ,company_id, name, origin, description , email, contact, created_at, updated_at ):
          super('Company',self).__init__()
          self.company_id = company_id
          self.name = name

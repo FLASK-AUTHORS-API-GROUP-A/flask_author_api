@@ -1,6 +1,11 @@
 from flask import Flask 
-from app.extensions import db,migrate ,jwt
+from app.extensions import db,migrate ,jwt,bcrypt
 from app.controllers.auth.auth_controller import auth
+from app.controllers.author.author_controller import authors
+from app.controllers.company.company_controller import companies
+from app.controllers.book.book_controller import book
+from flask import request
+from flask import jwt_required,get_jwt_identity
 
 #Application Factory Function
 def create_app():
@@ -20,6 +25,9 @@ def create_app():
  
     #registering blue prints
     app.register_blueprint(auth)
+    app.register_blueprint(authors)
+    app.register_blueprint(companies)
+    app.register_blueprint(book)
 
  
 
