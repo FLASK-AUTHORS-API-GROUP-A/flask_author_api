@@ -22,9 +22,10 @@ def createBook():
     image = data.get('image')
     no_of_pages = data.get('no_of_pages')
     price_unit = data.get('price_unit')
-    publication_year = data.get('publication_year')
+    publication_date = data.get('publication_date')
     genre = data.get('genre')
-    specialisation = data.get('specialisation')
+    format = data.get('format')
+    language = data.get('language')
     company_id = data.get('company_id')
     
 
@@ -43,23 +44,67 @@ def createBook():
       
 
        #creating a new book
-       new_book = Book(title=title,price=price, description=description, company_id=company_id)
+       new_book = Book(
+           title=title,
+           price=price,
+           description=description,
+           isbn = isbn,
+           image = image,
+           no_of_pages= no_of_pages,
+           price_unit= price_unit,
+           publication_date= publication_date,
+           genre= genre,
+           format = format,
+           language= language,
+           company_id=company_id)
+
        db.session.add(new_book)
        db.session.commit()
 
 
 
        return jsonify({
-           'message': title + " has been successfully created as an " + new_book,
-           'user':{
-               'id':new_book.id,
-               "name":new_book.title,
-               "origin":new_book.price,
-               "description": new_book.description
-              
+           'message': title + " has been successfully created " ,
+           'book':{
+               "id" :new_book.id,
+               "name" : new_book.title,
+               "description" : new_book.description,
+               "isbn" : new_book.isbn,
+               "image" : new_book.image,
+               "no_of_pages" : new_book.no_of_pages,
+               "price_unit" : new_book.price_unit,
+               "publication_date" : new_book.publication_date,
+               "genre" : new_book.genre,
+               "format" : new_book.format,
+               "language" : new_book.language,
            }
        }),HTTP_201_CREATED
 
     except Exception as e:   
         db.session.rollback() 
         return jsonify({'error':str(e)}),HTTP_500_INTERNAL_SERVER_ERROR
+    
+#Retrieving all books
+@book.get('/')
+@jwt_required()
+def get_all_books():
+
+      try:
+        all_books = Book.query.all()
+
+        book_data = []
+
+        for book in all_books:
+            book_info ={
+              
+        return jsonify({
+            "message":"All companies retrieved successfully",
+            "total_companies":len(companies_request),
+            "companies":companies_request
+
+        }), HTTP_200_OK
+    
+    except Exception as e:
+        return jsonify({
+            'error':str(e)
+        }),HTTP_500_INTERNAL_SERVER_ERROR
