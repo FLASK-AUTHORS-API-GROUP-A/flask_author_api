@@ -20,7 +20,7 @@ def get_all_authors():
         authors_data = [] # Creating an empty list to store the authors data 
         for author in all_authors:
             author_info = {
-                'id' : author.author_id,
+                'author_id' : author.author_id,
                 'first_name' : author.first_name,
                 'last_name' : author.last_name,
                 'authorname': author.get_full_name(),
@@ -33,7 +33,7 @@ def get_all_authors():
             } # Creating a dictionary to store the author's data
             if hasattr(author,'books'):
                 author_info['books'] = [{
-                    'id' : book.book_id,
+                    'book_id' : book.book_id,
                     'title' : book.title,
                     'genre' : book.genre,
                     'price': book.price,
@@ -86,7 +86,7 @@ def get_author_by_id(author_id):
 
         if hasattr(author,'books'):
                 books = [{
-                    'id' : book.book_id,
+                    'book_id' : book.book_id,
                     'title' : book.title,
                     'genre' : book.genre,
                     'price': book.price,

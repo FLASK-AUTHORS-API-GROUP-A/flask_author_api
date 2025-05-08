@@ -10,7 +10,7 @@ class Company(db.Model):
         description = db.Column(db.String(100), nullable = False)
         email =  db.Column(db.String(30), nullable = False, unique = True)
         contact = db.Column(db.String(10), nullable = False, unique = True)
-        author_id = db.Column(db.Integer, db.ForeignKey('authors.id'))
+        author_id = db.Column(db.Integer, db.ForeignKey('authors.author_id'))
         author = db.relationship('Author', backref = 'companies')
         created_at = db.Column(db.DateTime, default = datetime.now())
         updated_at = db.Column(db.DateTime, onupdate = datetime.now())
