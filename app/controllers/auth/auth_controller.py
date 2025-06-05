@@ -122,7 +122,7 @@ def login():
             return jsonify({"Error":"Invalid email"}),HTTP_401_UNAUTHORIZED
         
 
-    except Exception as e:
+    except Exception as e: 
         return jsonify({"Error":str(e)})
     
 

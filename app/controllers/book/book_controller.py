@@ -20,53 +20,68 @@ def createBook():
     image = data.get('image')
     no_of_pages = data.get('no_of_pages')
     price_unit = data.get('price_unit')
+    format = data.get('format')
+    language = data.get('language')
     publication_date = data.get('publication_date')
     genre = data.get('genre')
     company_id = data.get('company_id')
     
-
-
     #validations of the incoming request
-    if not title or not price or not description or not isbn or not image or not no_of_pages or not price_unit or not publication_year or not genre or not specialisation or not company_id:
+    if not title or not price or not description or not isbn or not image or not no_of_pages or not price_unit or not publication_date or not format or not genre or not language or not company_id:
         return jsonify({"error":"All fields are required"}),HTTP_400_BAD_REQUEST
     
 
     if Book.query.filter_by(title=title).first() is not None:
         return jsonify({"error":"Book title already exists."}),HTTP_409_CONFLICT
     
-    
     try:
       
 
        #creating a new book
-       new_book = Book(title=title,price=price, description=description, company_id=company_id)
+       new_book = Book(
+            title=title,
+            price=price, 
+            description=description,
+            isbn = isbn,
+            image = image,
+            no_of_pages= no_of_pages,
+            price_unit= price_unit,
+            publication_date= publication_date,
+            format= format,
+            genre= genre,
+            language= language,
+            company_id=company_id)
        db.session.add(new_book)
        db.session.commit()
 
 
        return jsonify({
-           'message': title + " has been successfully created as an " + new_book,
-           'user':{
-               'id':new_book.id,
+           'message': title + " has been successfully created as an " ,
+           'book':{
+               'id':new_book.book_id,
                "name":new_book.title,
                "origin":new_book.price,
-               "description": new_book.description
-              
+               "description": new_book.description,
+               "genre" : new_book.genre,
+               "language": new_book.language
            }
        }),HTTP_201_CREATED
 
     except Exception as e:   
         db.session.rollback() 
         return jsonify({'error':str(e)}),HTTP_500_INTERNAL_SERVER_ERROR
+    
  # getting book by id
 @book.get('/book/<int:id>')
 @jwt_required()
-def getBook(id):
+def getBook(book_id):
     try:
-        Book = Book.query.filter_by(id=id).first()
+
+        book = Book.query.filter_by(book_id=book_id).first()
          
         if not Book: 
-            return jsonify({"error":"Book not found"}), HTTP_404_NOT_FOUND
+            return jsonify({"Error":"Book not found"}), HTTP_404_NOT_FOUND
+        
         return jsonify({
 
             "message":"Book details retrieved successfully",
@@ -87,7 +102,7 @@ def getBook(id):
                         'email' : book.email,
                         'contact' : book.contact,
                         'biography' : book.biography,
-                          'created_at' : book.created_at
+                        'created_at' : book.created_at
             }
        }})
                     
@@ -97,36 +112,35 @@ def getBook(id):
         }),HTTP_500_INTERNAL_SERVER_ERROR
     
 #Updating a Book  
-@book.route('/update/<int:id>', methods=['PUT', 'PATCH'] ,  endpoint='update_author') # Defining a route for editing a book  
+@book.route('/update/<int:id>', methods=['PUT', 'PATCH'] ,  endpoint='update_book') # Defining a route for editing a book  
 @jwt_required()
-def updateBookdetails(id):
+def updateBookdetails(book_id):
     
    try:
         
         current_book = get_jwt_identity() # returns the current book's id
-        logged_in_user = Book.query.filter_by(id=current_book).first() # Querying the database for the book with the specified id
+        logged_in_user = Book.query.filter_by(book_id=current_book).first() # Querying the database for the book with the specified id
         
         
-        book = Book.query.get(user_id) # Querying the database for the book with the specified id
+        book = Book.query.get(book_id) # Querying the database for the book with the specified id
         if not book:
             return jsonify({'message': 'Book is not found'}), HTTP_404_NOT_FOUND
         
-        elif logged_in_user.user_type !='admin' and book.author_id!= current_book:
-            return jsonify({'message': 'You are not authorized to update the book detais'}), HTTP_401_UNAUTHORIZED
-        
         else:
         # store request data
-               data = request.get_json()
-               title =request.get_json().get("title",book.name)
-               price = request.get_json().get('price',book.price)
-               description = request.get_json().get('description',book.description)
-               isbn = request.get_json().get('isbn',book.isbn)
-               image = request.get_json().get('image',book.image)
-               no_of_pages = request.get_json().get('no_of_pages',book.no_of_pages)
-               price_unit =  request.get_json().get('price_unit',book.price_unit)
-               publication_date =  request.get_json().get('publication_date',book.publication_date)
-               genre =  request.get_json().get('genre',book.genre)
-               company_id =  request.get_json().get('company_id',book.company_id)
+               data = request.get_json
+               title =data.get_json().get("title",book.name)
+               price = data.get_json().get('price',book.price)
+               description = data.get_json().get('description',book.description)
+               isbn = data.get_json().get('isbn',book.isbn)
+               image = data.get_json().get('image',book.image)
+               no_of_pages = data.get_json().get('no_of_pages',book.no_of_pages)
+               price_unit =  data.get_json().get('price_unit',book.price_unit)
+               publication_date =  data.get_json().get('publication_date',book.publication_date)
+               genre =  data.get_json().get('genre',book.genre)
+               language = data.get_json().get('language', book.language)
+               format = data.get_json().get('format', book.format)
+               company_id =  data.get_json().get('company_id',book.company_id)
 
             
         if isbn != book.isbn and Book.query.filter_by(isbn=isbn).first():
@@ -147,8 +161,10 @@ def updateBookdetails(id):
         book.isbn= isbn
         book.publication_date= publication_date
         book.image= image
-        book.company_id= company_id
+        book.language = language
+        book.format = format
         book.no_of_pages= no_of_pages
+        book.company_id= company_id
         
         db.session.commit()
               
@@ -160,9 +176,11 @@ def updateBookdetails(id):
                 'price':book.price,
                 'price_unit':book.price_unit,
                 'description':book.description,
-                'pages':book.pages,
+                'no_of_pages':book.no_of_pages,
                 'isbn':book.isbn,
                 'genre':book.genre,
+                'format':book.format,
+                'language':book.language,
                 'publication_date':book.publication_date,
                 'image':book.image,
                 'created_at':book.created_at,
